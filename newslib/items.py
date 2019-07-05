@@ -11,4 +11,9 @@ import scrapy
 class NewslibItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    pass
+    punchword = scrapy.Field()
+    category = scrapy.Field()
+    headline = scrapy.Field()
+    subline = scrapy.Field()
+    date = scrapy.Field()
+    text = scrapy.Field()
