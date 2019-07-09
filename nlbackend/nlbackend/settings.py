@@ -76,7 +76,7 @@ WSGI_APPLICATION = 'nlbackend.wsgi.application'
 DATABASES = {
        'default': {
            'ENGINE': 'djongo',
-           'NAME': 'newslib-djongo-db',
+           'NAME': 'items',
            'HOST': 'localhost',
            'PORT': 27017
 

@@ -44,5 +44,4 @@ class Spiegel_Online_Archive_Spider(scrapy.Spider):
 
         item['text'] = l
 
-        print(item)
         yield item
