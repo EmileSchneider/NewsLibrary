@@ -33,7 +33,7 @@ def get_substantivs(text):
 #
 from rake_nltk import Rake
 r = Rake(min_length=1, max_length=1, language='german')
-
+'''
 for item in items.find():
     # print(pprint.pprint(item['text']))
     #print(get_substantivs(item['text']))
@@ -47,3 +47,5 @@ for item in items.find():
         "keyWords": l
     }
     parsed_items.insert_one(doc_dic)
+'''
+
