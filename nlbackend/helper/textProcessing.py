@@ -32,8 +32,15 @@ def get_substantivs(text):
 # use of spacy and textrank implemantation
 #
 from rake_nltk import Rake
-r = Rake(min_length=1, max_length=1, language='german')
 '''
+r = Rake(min_length=1, max_length=1, language='german')
+item = items.find()[0]
+print(item['text'])
+r.extract_keywords_from_text(item['text'])
+print(nltk.pos_tag(r.get_ranked_phrases()))
+def getnoun(word):
+    pass
+    
 for item in items.find():
     # print(pprint.pprint(item['text']))
     #print(get_substantivs(item['text']))
@@ -49,3 +56,36 @@ for item in items.find():
     parsed_items.insert_one(doc_dic)
 '''
 
+
+# Hacky NLP : first get all the nouns from an article and add as keyword to dictionary with a set of the artikle _ids
+nlp = spacy.load('de_core_news_sm')
+
+def getnoun(text):
+    doc = nlp(text)
+    candidate_pos = ['NOUN']
+    nouns = []
+    for sent in doc.sents:
+        for token in sent:
+            if token.pos_ in candidate_pos and token.is_stop is False:
+                nouns.append(token)
+
+    return(nouns)
+
+
+noundic = {}
+
+def addnewnouns(nounlist, item_id):
+    for n in nounlist:
+        n = n.text
+        if n in noundic:
+            noundic[n].add(item_id)
+        else:
+            noundic[n] = {item_id}
+
+
+for item in items.find():
+    addnewnouns(getnoun(item['text']), item['_id'])
+
+pprint.pprint(noundic)
+
+# Hacky serachgit
