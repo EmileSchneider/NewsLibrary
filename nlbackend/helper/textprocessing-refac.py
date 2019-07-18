@@ -26,6 +26,7 @@ from pymongo import MongoClient
 from stop_words import get_stop_words
 import nltk
 
+
 def scrapy_items():
     client = MongoClient()
     db = client.items
@@ -40,6 +41,48 @@ def removestopwords(artikeltext):
                 if not token in stop_words
                 and not token in punctuation]
 
+
 def makelowercase(tokenlist):
     return [token.lower() for token in tokenlist]
+
+
+def makelexicon(lex):
+    return MongoClient.items.nlp.lexicon.insert(lex)
+
+
+def savelexicon(lex):
+    return MongoClient.items.nlp.lexicon.save(lex)
+
+
+def getlexicon():
+    return MongoClient.items.nlp.lexicon.find_one()
+
+
+def updatelexicon(lex, tokenlist):
+    for t in tokenlist:
+        if t not in lex:
+            lex[t] = 0
+        if t in lex:
+            lex[t] = lex[t] + 1
+    return lex
+
+
+class NewsItemProcessingFactory():
+    def __init__(self):
+        client = MongoClient()
+        db = client.items
+        rawitems = self.__connectDBrawitems__()
+        processeditems = self.__connectDBprocesseditems__()
+
+    def __connectDBprocesseditems__(self):
+        return self.db.processed_items
+
+    def __connectDBrawitems__(self):
+        return self.db.scrapy_items
+
+    def getunprocesseditems(self):
+        pass
+
+    def processitem(self):
+        pass
 
