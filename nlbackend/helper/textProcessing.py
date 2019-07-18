@@ -86,6 +86,86 @@ def addnewnouns(nounlist, item_id):
 for item in items.find():
     addnewnouns(getnoun(item['text']), item['_id'])
 
-pprint.pprint(noundic)
+# Hacky serach functuin
 
-# Hacky serachgit
+def parse(searchString):
+    return(searchString.split())
+
+def search(searchString):
+    matchlist = []
+    p = parse(searchString)
+    for word in p:
+        matchlist.append(noundic[word])
+    return(matchlist)
+
+def getsecondlevelnodes(objectid):
+    secondlevelnodes = []
+    for keyword in noundic:
+        for obj in noundic[keyword]:
+            if objectid['id'] == obj:
+                secondlevelnodes.append(objectid['id'])
+        print(secondlevelnodes)
+    return(secondlevelnodes)
+
+def reactjson(search_string_res):
+    retdic = {}
+    retdic['nodes'] = []
+    retdic['links'] = []
+
+    def getitemheadline(item_id):
+        print(items.find(item_id))
+        return('someheadline item-id')
+
+
+
+    for id in search_string_res[0]:
+        retdic['nodes'].append(createnode(id))
+
+    return(retdic)
+
+def createnode(item_id):
+    pprint.pprint(type(item_id))
+    return({'id' : 'odddd'})
+
+def xxx():
+    l = []
+    retdic = {}
+    for o in search('Kanzler')[0]:
+        l.append(o)
+
+    retdic['nodes'] = [{'id': str(i)} for i in l]
+    m = l[:len(l) - 1]
+    retdic['links'] = [{'source': str(i) , 'target': str(l[l.index(i) + 1])} for i in m ]
+    return(retdic)
+
+
+def yyy(retdic):
+    for i in retdic['nodes']:
+        print(i)
+        print(getsecondlevelnodes(i))
+        for j in getsecondlevelnodes(i):
+            retdic['nodes'].append({'id' : str(j)})
+            retdic['links'].append({'source': i, 'target': str(j)})
+    return retdic
+
+
+from flask import Flask, request
+from flask_restful import Resource, Api
+from json import dumps
+from flask import jsonify
+from flask_cors import CORS
+
+app = Flask(__name__)
+api = Api(app)
+
+
+class Flights(Resource):
+    def get(self):
+        return jsonify(yyy(xxx()))
+
+api.add_resource(Flights, '/flights')
+
+CORS(app)
+
+if __name__ == '__main__':
+    app.run()
