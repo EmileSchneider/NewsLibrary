@@ -43,5 +43,5 @@ class Spiegel_Online_Archive_Spider(scrapy.Spider):
             l = l + i.string
 
         item['text'] = l
-
+        item['parsed'] = False
         yield item

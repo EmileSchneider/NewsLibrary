@@ -15,5 +15,6 @@ class NewslibItem(scrapy.Item):
     category = scrapy.Field()
     headline = scrapy.Field()
     subline = scrapy.Field()
+    parsed = scrapy.Field()
     date = scrapy.Field()
     text = scrapy.Field()
