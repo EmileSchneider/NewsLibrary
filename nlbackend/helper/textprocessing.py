@@ -29,6 +29,16 @@ import pprint
 import copy
 import re
 from collections import OrderedDict
+from scipy.spatial import distance_matrix
+
+import pandas as pd
+
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import CountVectorizer
+
+import numpy as np
 def scrapy_items():
     client = MongoClient()
     db = client.items
@@ -72,6 +82,8 @@ def updatelexicon(lex, tokenlist):
 
 
 class NewsItemProcessingFactory():
+
+
    def __init__(self):
        self.lexicon = getlexicon()
        self.rawitems = MongoClient().items.scrapy_items
@@ -104,20 +116,25 @@ class NewsItemProcessingFactory():
        return c
 
    def docvectors(self):
-       v = self.lexicon2zerovec()
-       l = len(v)
-       veclist = []
-       for doc in self.parseditems.find({}):
-           vec = copy.copy(v)
-           tokens = doc['artikel-text']
-           for t in tokens:
-               term_frequency = self.counttoken(tokens, t) / len(tokens)
-               other_doc_with_keyword = 0
-               for d in self.parseditems.find({}):
-                   if t in d['artikel-text']:
-                       other_doc_with_keyword = other_doc_with_keyword + 1
-               inverse_doc_frequency = len(list(self.parseditems.find())) / other_doc_with_keyword
-               vec[t] = term_frequency * inverse_doc_frequency
-           pprint.pprint(vec)
-           veclist.append(vec)
-       return veclist
+       tfidf_vectorizer = TfidfVectorizer(tokenizer=removestopwords, use_idf=True)
+       tfidf_vectorizer_vectors = tfidf_vectorizer.fit_transform([text['text'] for text in self.rawitems.find({})])
+       return [tfidf_vectorizer_vectors, tfidf_vectorizer ]
+
+   def euclidieandistance(self, v1, v2):
+       return np.linalg.norm(v1-v2)
+
+   def distancematrix(self, tfidfmatrix):
+       print(tfidfmatrix.shape)
+       print(type(tfidfmatrix))
+       print(tfidfmatrix.shape)
+       return distance_matrix(tfidfmatrix.todense(), tfidfmatrix.todense())
+
+   def do(self):
+       return self.distancematrix(self.docvectors()[0])
+
+
+'''
+n = NewsItemProcessingFactory()
+
+n.do()
+'''

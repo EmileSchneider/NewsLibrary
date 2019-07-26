@@ -1,4 +1,6 @@
 import textprocessing as tp
+import numpy as np
+import pandas as pd
 
 def test_empty_updatelexicon():
     assert tp.updatelexicon({}, ['Hallo','Welt', 'Das', 'Das']) == {'Hallo': 1, 'Welt': 1, 'Das': 2 }
@@ -14,3 +16,18 @@ def test_removestopwords():
     assert tp.removestopwords(artikeltext) == ['welt', 'gerechter', 'ort', 'kleine', 'kinder', 'schwache', 'gerechte','starke']
 
 
+
+n = tp.NewsItemProcessingFactory()
+df = pd.DataFrame(n.docvectors()[0].todense())
+
+
+def test_euclidieandistance():
+    v1 = np.array((1, 2, 3))
+    v2 = np.array((1, 2, 3))
+    assert n.euclidieandistance(v1, v2) == 0
+
+def test_getvector():
+    print(df[0])
+
+def test_rowtovector():
+    print('')
